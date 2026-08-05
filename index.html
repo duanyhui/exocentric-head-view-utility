@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Is a Head View Still Necessary with Large-FoV Wrist Cameras?</title>
+<meta name="description" content="A controlled study of exocentric head views in UMI-style large-FoV wrist-camera tabletop bimanual manipulation.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;550;600;650;700&family=Source+Serif+4:opsz,wght@8..60,450;8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📷</text></svg>">
+</head>
+<body>
+
+<!-- ======================= nav ======================= -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">Is a Head View Still Necessary?</div>
+    <div class="nav-links">
+      <a href="#abstract">Abstract</a>
+      <a href="#findings">Findings</a>
+      <a href="#setup">Setup</a>
+      <a href="#results">Results</a>
+      <a href="#analysis">Analysis</a>
+      <a href="#bibtex">BibTeX</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ======================= hero ======================= -->
+<header class="hero">
+  <div class="eyebrow">Robotics · Technical Report</div>
+  <h1>Assessing the Marginal Utility of Exocentric Head Views in UMI-Style Large-FoV Wrist-Camera Manipulation</h1>
+  <p class="subtitle">A Controlled Study for Tabletop Bimanual Manipulation</p>
+  <p class="authors"><span class="anon">Anonymous Author(s)</span> · Anonymous Affiliation(s)</p>
+  <p class="venue">Public Technical Report · June 2026 · Policy backbone: OpenPI π<sub>0.5</sub></p>
+  <div class="hero-buttons">
+    <a class="btn btn-dark" href="static/paper.pdf" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Paper (PDF)
+    </a>
+    <a class="btn btn-ghost" href="#bibtex">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      BibTeX
+    </a>
+    <a class="btn btn-ghost" href="#" aria-disabled="true" title="Code release coming soon">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5A11.5 11.5 0 0 0 .5 12.3c0 5.2 3.3 9.6 7.9 11.2.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.6-3.9-1.6-.5-1.4-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-6a4.7 4.7 0 0 1 1.2-3.2 4.4 4.4 0 0 1 .1-3.2s1-.3 3.2 1.2a11 11 0 0 1 5.8 0C17.3 4.7 18.3 5 18.3 5a4.4 4.4 0 0 1 .1 3.2 4.7 4.7 0 0 1 1.2 3.2c0 4.7-2.7 5.7-5.3 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6a11.6 11.6 0 0 0 7.9-11.2A11.5 11.5 0 0 0 12 .5z"/></svg>
+      Code (soon)
+    </a>
+  </div>
+</header>
+
+<!-- ======================= teaser ======================= -->
+<div class="teaser">
+  <div class="teaser-frame">
+    <img src="static/img/platform_annotated.jpg" alt="Real bimanual platform with two large-FoV wrist cameras and one head camera, annotated.">
+  </div>
+  <p class="teaser-caption"><b>The real bimanual platform.</b> Two UMI-style large-FoV wrist cameras move with the arms; a fixed head camera provides an optional exocentric view. We keep the policy backbone (OpenPI π<sub>0.5</sub>), training recipe, and evaluation schedule fixed, and only vary wrist FoV, head-view input form, and data scale.</p>
+</div>
+
+<div class="takeaway">
+  <p>“More cameras” is not the design principle — <em>task-relevant information density</em> is. With large-FoV wrist cameras, a head view is an auxiliary signal, not a default requirement.</p>
+</div>
+
+<!-- ======================= abstract ======================= -->
+<section class="block" id="abstract">
+  <h2>Abstract</h2>
+  <div class="section-sub">&nbsp;</div>
+  <div class="abstract-box">
+    <p>Multi-view perception is often treated as a safe design choice for robot manipulation: if one camera is useful, more cameras should be better. We revisit that assumption in tabletop bimanual manipulation by comparing policies trained with two large-field-of-view (FoV) wrist cameras against policies that additionally receive a head view, using controlled-variable experiments on a real bimanual platform.</p>
+    <p>Across three tabletop tasks, adding a head view does not consistently improve task completion or execution quality: when the wrist cameras already observe the objects, grippers, and goal regions, wrist-only policies form a strong baseline. Restricting the wrist-camera FoV increases the potential value of a head view, but performance improves most reliably when the added view supplies concentrated, task-relevant information: region-of-interest (ROI) cropping yields more consistent head-view gains than the uncropped image, which is dominated by background and task-irrelevant regions.</p>
+    <p>The data-scaling results further suggest an interaction between FoV and demonstration count: wide observations improve coverage but may require more data to stabilize, and they may reach a higher performance ceiling once enough demonstrations are available. These results suggest that camera design should be framed as a task-relevance and information-density problem rather than as a simple count of input views.</p>
+  </div>
+</section>
+
+<!-- ======================= key findings ======================= -->
+<section class="block" id="findings">
+  <h2>Key Findings</h2>
+  <p class="section-sub">Four research questions, answered with controlled contrasts on a real bimanual platform.</p>
+  <div class="cards">
+    <div class="card">
+      <span class="tag">RQ1 · Large-FoV baseline</span>
+      <h3>Wrist-only is already a strong baseline</h3>
+      <p>Under large-FoV wrists, head-view contrasts are inconsistent: RawHead lowers mean FinalScore on Task A (<span class="num">−16.0</span>) and Task B (<span class="num">−1.1</span>); ROIHead helps on Task B (<span class="num">+21.0</span>) and Task C (<span class="num">+12.2</span>) but not Task A (<span class="num">−6.0</span>).</p>
+    </div>
+    <div class="card">
+      <span class="tag">RQ2 · Restricted FoV</span>
+      <h3>Restriction creates opportunity, not a guarantee</h3>
+      <p>ROIHead improves localization under <em>every</em> FoV setting, yet Δ<sub>head</sub> flips negative at medium FoVs (<span class="num">−5.3</span>, <span class="num">−7.9</span>) because longer trajectories violate the quality gate — while D435-like converts it into a <span class="num">+29.2</span> gain.</p>
+    </div>
+    <div class="card">
+      <span class="tag">RQ3 · Input form</span>
+      <h3>Head-view form matters more than presence</h3>
+      <p>ROI-cropped head views beat raw head views on <span class="num">5 of 6</span> task–FoV combinations. RawHead shows a characteristic pattern: tasks get completed, but with low quality success and longer trajectories.</p>
+    </div>
+    <div class="card">
+      <span class="tag">RQ4 · Data scaling</span>
+      <h3>FoV conclusions are data-scale-dependent</h3>
+      <p>Only the large-FoV wrist-only configuration crosses FinalScore 60 — and only at <span class="num">800</span> demonstrations. Wide views may need more data to stabilize but suggest a higher ceiling.</p>
+    </div>
+  </div>
+</section>
+
+<div class="rule"><hr></div>
+
+<!-- ======================= setup ======================= -->
+<section class="block" id="setup">
+  <h2>Experimental Setup</h2>
+  <p class="section-sub">Three tabletop tasks × six visual configurations, with the policy backbone, training recipe, and evaluation schedule held fixed.</p>
+
+  <div class="task-grid">
+    <div class="task-card">
+      <img src="static/img/task_a.jpg" alt="Task A: four-object organization scene">
+      <div class="body">
+        <h3><span>Task A</span> · Four-Object Organization</h3>
+        <p>Sequentially grasp four objects and place them into assigned storage positions. Long-horizon, multi-stage; also used for the data-scaling study.</p>
+      </div>
+    </div>
+    <div class="task-card">
+      <img src="static/img/task_b.jpg" alt="Task B: basket nesting scene">
+      <div class="body">
+        <h3><span>Task B</span> · Basket Nesting</h3>
+        <p>Nest four surrounding baskets into a central target basket with both arms. Stresses bimanual coordination and relative pose; used for the wrist-FoV scan.</p>
+      </div>
+    </div>
+    <div class="task-card">
+      <img src="static/img/task_c.jpg" alt="Task C: plate placement scene">
+      <div class="body">
+        <h3><span>Task C</span> · Plate Placement</h3>
+        <p>Grasp plates and insert them accurately into a rack. Sensitive to first localization, grasp stability, and final placement precision.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="figure plain">
+    <img src="static/img/task_overview.jpg" alt="Task overview grid: Tasks A to C under initial layouts Init01 to Init03 with annotated goals." loading="lazy" style="max-width: min(100%, 860px);">
+    <p class="figure-caption"><b>Initial layouts.</b> Every task is evaluated under three fixed initial layouts (Init01–Init03) that relocate objects between rollouts, so no configuration can succeed by replaying one memorized trajectory.</p>
+  </div>
+
+  <h2 style="font-size: 23px; margin-top: 64px;">Two Controlled Visual Factors</h2>
+  <p class="section-sub">Wrist-camera FoV (Large → D435-like crop) and head-view input form (none / raw / ROI-cropped).</p>
+
+  <div class="view-strip">
+    <div class="view-item">
+      <img src="static/img/large.png" alt="Large-FoV wrist camera view">
+      <div class="label">Large-FoV wrist</div>
+      <div class="sub">UMI-style wide view; objects, grippers &amp; goals visible</div>
+    </div>
+    <div class="view-item">
+      <img src="static/img/d435.png" alt="D435-like cropped wrist camera view">
+      <div class="label">D435-like wrist</div>
+      <div class="sub">Narrow crop; targets can leave the frame</div>
+    </div>
+    <div class="view-item">
+      <img src="static/img/rawhead.png" alt="Raw head camera view">
+      <div class="label"><span class="dot" style="background:var(--c-rawhead)"></span>RawHead</div>
+      <div class="sub">Full head image, background-dominated</div>
+    </div>
+    <div class="view-item">
+      <img src="static/img/roihead.png" alt="ROI-cropped head camera view">
+      <div class="label"><span class="dot" style="background:var(--c-roihead)"></span>ROIHead</div>
+      <div class="sub">Same camera, cropped to the task region</div>
+    </div>
+  </div>
+
+  <div class="config-table-wrap">
+    <table class="config">
+      <thead>
+        <tr><th>ID</th><th>Wrist FoV</th><th>Head type</th><th>Input configuration</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>G1</td><td>Large</td><td><span class="dot" style="background:var(--c-nohead)"></span>NoHead</td><td>Large wrist only</td><td>Large-FoV dual-wrist baseline</td></tr>
+        <tr><td>G2</td><td>Large</td><td><span class="dot" style="background:var(--c-rawhead)"></span>RawHead</td><td>Large wrist + RawHead</td><td>Raw head view under large FoV</td></tr>
+        <tr><td>G3</td><td>Large</td><td><span class="dot" style="background:var(--c-roihead)"></span>ROIHead</td><td>Large wrist + ROIHead</td><td>ROI head view under large FoV</td></tr>
+        <tr><td>G4</td><td>D435-like</td><td><span class="dot" style="background:var(--c-nohead)"></span>NoHead</td><td>Cropped wrist only</td><td>Simulated restricted wrist vision</td></tr>
+        <tr><td>G5</td><td>D435-like</td><td><span class="dot" style="background:var(--c-rawhead)"></span>RawHead</td><td>Cropped wrist + RawHead</td><td>Raw head view under small FoV</td></tr>
+        <tr><td>G6</td><td>D435-like</td><td><span class="dot" style="background:var(--c-roihead)"></span>ROIHead</td><td>Cropped wrist + ROIHead</td><td>ROI head view under small FoV</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="figure plain">
+    <img src="static/img/camera_config.png" alt="Camera configuration schematic: representative policy-input frames for each view and FoV setting." loading="lazy" style="max-width: min(100%, 820px);">
+    <p class="figure-caption"><b>Representative policy inputs.</b> Top: left-wrist, right-wrist, RawHead, and ROIHead views. Bottom: left-wrist inputs under the four FoV settings. What matters to the policy is the proportion of targets, grippers, and goal regions in each image — not the number of cameras.</p>
+  </div>
+</section>
+
+<div class="rule"><hr></div>
+
+<!-- ======================= results ======================= -->
+<section class="block" id="results">
+  <h2>Results</h2>
+  <p class="section-sub">All charts are redrawn from the report's per-rollout scoring records. Hover over any mark for the underlying values.</p>
+
+  <!-- main experiment -->
+  <div class="chart-block">
+    <div class="chart-head">
+      <h3>Main experiment — G1–G6 across three tasks</h3>
+      <div class="tabs" id="main-metric-tabs" role="tablist" aria-label="Metric selector">
+        <button class="active" data-metric="final">FinalScore</button>
+        <button data-metric="completion">Completion</button>
+        <button data-metric="quality">Quality</button>
+        <button data-metric="steps">Steps</button>
+      </div>
+    </div>
+    <p class="chart-sub" id="main-metric-note">Quality-adjusted score (higher is better)</p>
+    <div class="legend" id="main-legend">
+      <span class="item"><span class="swatch" style="background:var(--c-nohead)"></span>NoHead</span>
+      <span class="item"><span class="swatch" style="background:var(--c-rawhead)"></span>RawHead</span>
+      <span class="item"><span class="swatch" style="background:var(--c-roihead)"></span>ROIHead</span>
+      <span class="item split-only"><span class="swatch" style="background:#8a8f99"></span>Outcome contribution</span>
+      <span class="item split-only"><span class="swatch" style="background:#dcdee3; box-shadow: inset 0 0 0 1px #8a8f99;"></span>High-quality bonus</span>
+      <span class="item"><span class="line-swatch" style="border-color:#c95d43; border-top-style: dashed;"></span>G1 baseline</span>
+    </div>
+    <div class="chart-canvas panel-row" id="chart-main-results"></div>
+    <p class="chart-note">FinalScore = ½·outcome + 50·(high-quality indicator). In the FinalScore view each bar is split into the outcome contribution (solid) and the high-quality bonus (light top segment); the two sum to FinalScore. Bars with no light segment complete rollouts without earning any high-quality bonus — see Task&nbsp;A: G2 completes <em>more often</em> than G1 (90% vs. 50%) yet earns zero bonus, so it scores lower. Completion counts coarse task success; Quality counts strict high-quality completions; Steps are low-level control steps (lower is better).</p>
+    <details class="data-table">
+      <summary>Show the full data table</summary>
+      <div class="config-table-wrap">
+        <table class="config">
+          <thead><tr><th>Task</th><th>Config</th><th>Wrist FoV</th><th>Head</th><th>Completion</th><th>FinalScore</th><th>Score split</th><th>Quality success</th><th>Steps</th></tr></thead>
+          <tbody>
+            <tr><td>A</td><td>G1</td><td>Large</td><td>NoHead</td><td>50%</td><td>65.2</td><td>45.2 + 20.0</td><td>40%</td><td>975.0</td></tr>
+            <tr><td>A</td><td>G2</td><td>Large</td><td>RawHead</td><td>90%</td><td>49.2</td><td>49.2 + 0.0</td><td>0%</td><td>1045.0</td></tr>
+            <tr><td>A</td><td>G3</td><td>Large</td><td>ROIHead</td><td>80%</td><td>59.2</td><td>49.2 + 10.0</td><td>20%</td><td>1050.0</td></tr>
+            <tr><td>A</td><td>G4</td><td>D435-like</td><td>NoHead</td><td>60%</td><td>47.3</td><td>42.3 + 5.0</td><td>10%</td><td>1200.0</td></tr>
+            <tr><td>A</td><td>G5</td><td>D435-like</td><td>RawHead</td><td>70%</td><td>45.1</td><td>45.1 + 0.0</td><td>0%</td><td>1500.0</td></tr>
+            <tr><td>A</td><td>G6</td><td>D435-like</td><td>ROIHead</td><td>30%</td><td>44.1</td><td>44.1 + 0.0</td><td>0%</td><td>1165.0</td></tr>
+            <tr><td>B</td><td>G1</td><td>Large</td><td>NoHead</td><td>60%</td><td>68.2</td><td>43.2 + 25.0</td><td>50%</td><td>837.5</td></tr>
+            <tr><td>B</td><td>G2</td><td>Large</td><td>RawHead</td><td>50%</td><td>67.2</td><td>47.2 + 20.0</td><td>40%</td><td>905.0</td></tr>
+            <tr><td>B</td><td>G3</td><td>Large</td><td>ROIHead</td><td>80%</td><td>89.2</td><td>49.2 + 40.0</td><td>80%</td><td>790.0</td></tr>
+            <tr><td>B</td><td>G4</td><td>D435-like</td><td>NoHead</td><td>20%</td><td>42.2</td><td>37.2 + 5.0</td><td>10%</td><td>945.0</td></tr>
+            <tr><td>B</td><td>G5</td><td>D435-like</td><td>RawHead</td><td>30%</td><td>57.5</td><td>42.5 + 15.0</td><td>30%</td><td>947.5</td></tr>
+            <tr><td>B</td><td>G6</td><td>D435-like</td><td>ROIHead</td><td>50%</td><td>71.4</td><td>46.4 + 25.0</td><td>50%</td><td>907.5</td></tr>
+            <tr><td>C</td><td>G1</td><td>Large</td><td>NoHead</td><td>80%</td><td>77.8</td><td>47.8 + 30.0</td><td>60%</td><td>1100.0</td></tr>
+            <tr><td>C</td><td>G2</td><td>Large</td><td>RawHead</td><td>80%</td><td>77.8</td><td>47.8 + 30.0</td><td>60%</td><td>1095.0</td></tr>
+            <tr><td>C</td><td>G3</td><td>Large</td><td>ROIHead</td><td>100%</td><td>90.0</td><td>50.0 + 40.0</td><td>80%</td><td>1040.0</td></tr>
+            <tr><td>C</td><td>G4</td><td>D435-like</td><td>NoHead</td><td>0%</td><td>28.0</td><td>28.0 + 0.0</td><td>0%</td><td>1365.0</td></tr>
+            <tr><td>C</td><td>G5</td><td>D435-like</td><td>RawHead</td><td>0%</td><td>36.9</td><td>36.9 + 0.0</td><td>0%</td><td>1260.0</td></tr>
+            <tr><td>C</td><td>G6</td><td>D435-like</td><td>ROIHead</td><td>90%</td><td>58.3</td><td>48.3 + 10.0</td><td>20%</td><td>1240.0</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+  </div>
+
+  <!-- heatmap -->
+  <div class="chart-block">
+    <div class="chart-head"><h3>Mean FinalScore at a glance</h3><span class="hint">hover cells for details</span></div>
+    <p class="chart-sub">The cross-task pattern: large-FoV columns (G1–G3) stay strong; D435-like columns (G4–G6) recover only when a concentrated ROI head view is added.</p>
+    <div class="chart-canvas" id="chart-heatmap" style="max-width: 780px; margin: 0 auto;"></div>
+  </div>
+
+  <!-- head gain -->
+  <div class="chart-block">
+    <div class="chart-head"><h3>Head-view contrasts under Large-FoV wrists</h3><span class="hint">hover bars for metric changes</span></div>
+    <p class="chart-sub">ΔFinalScore of adding a head view to the G1 wrist-only baseline (G2−G1 and G3−G1). No consistent direction across tasks — the head view is a task-dependent auxiliary signal, not a default requirement.</p>
+    <div class="legend">
+      <span class="item"><span class="swatch" style="background:var(--c-rawhead)"></span>G2 − G1 (RawHead)</span>
+      <span class="item"><span class="swatch" style="background:var(--c-roihead)"></span>G3 − G1 (ROIHead)</span>
+    </div>
+    <div class="chart-canvas" id="chart-headgain" style="max-width: 780px; margin: 0 auto;"></div>
+  </div>
+
+  <!-- fov scan -->
+  <div class="chart-block">
+    <div class="chart-head"><h3>Wrist-FoV scan on Task B — a non-monotonic story</h3><span class="hint">hover bars for the paired values</span></div>
+    <p class="chart-sub">Restricting wrist FoV should raise the value of a head view — but Δ<sub>head</sub> is <em>non-monotonic</em>. Panel (b) explains why: localization improves under every FoV, while the quality-success change flips sign exactly at the medium settings, where longer ROIHead trajectories violate the T ≤ 900 quality gate.</p>
+    <div class="legend">
+      <span class="item"><span class="swatch" style="background:#2e8b72"></span>positive Δ<sub>head</sub></span>
+      <span class="item"><span class="swatch" style="background:#c05b49"></span>negative Δ<sub>head</sub></span>
+      <span class="item"><span class="swatch" style="background:var(--c-loc)"></span>Δ localization</span>
+      <span class="item"><span class="swatch" style="background:var(--c-comp)"></span>Δ completion</span>
+      <span class="item"><span class="swatch" style="background:var(--c-qual)"></span>Δ quality success</span>
+    </div>
+    <div class="chart-canvas panel-row-2">
+      <div id="chart-fov-delta"></div>
+      <div id="chart-fov-decomp"></div>
+    </div>
+    <p class="chart-note">The slim gray ranges behind the bars in (a) are descriptive bootstrap intervals over fixed rollout slots, not significance tests. Large FoV: a complementary global-layout cue (+21.0). D435-like: compensation for missing wrist evidence (+29.2). FoV120/FoV90: opportunity without conversion — localization gains fail to clear the quality gate.</p>
+  </div>
+
+  <!-- scaling -->
+  <div class="chart-block">
+    <div class="chart-head"><h3>Data scaling on Task A</h3><span class="hint">hover points for intervals</span></div>
+    <p class="chart-sub">Under a fixed 60k-step optimization budget with nested subsets, only the large-FoV wrist-only configuration crosses the FinalScore-60 threshold — and only at 800 demonstrations. Wide views appear to need more data to stabilize but suggest a higher ceiling.</p>
+    <div class="legend">
+      <span class="item"><span class="line-swatch" style="border-color:#2a78d6"></span>2W-Large</span>
+      <span class="item"><span class="line-swatch" style="border-color:#eb6834"></span>2W-D435Crop</span>
+      <span class="item"><span class="line-swatch" style="border-color:#1baf7a"></span>3V-D435Crop-ROIHead</span>
+    </div>
+    <div class="chart-canvas" id="chart-scaling" style="max-width: 780px; margin: 0 auto;"></div>
+    <p class="chart-note">The slim vertical ranges at each measured point are descriptive bootstrap intervals — intervals exist only at 50/200/800 demonstrations, so no continuous band is drawn. The 2W-D435Crop point at 200 demonstrations is a non-monotonic outlier consistent with high variance under the fixed evaluation schedule — the trend is not presented as a strict scaling law.</p>
+  </div>
+</section>
+
+<div class="rule"><hr></div>
+
+<!-- ======================= analysis ======================= -->
+<section class="block" id="analysis">
+  <h2>Analysis</h2>
+  <p class="section-sub">Why the head view behaves this way: input form, completion-vs-quality, and where each view actually matters.</p>
+
+  <!-- scatter -->
+  <div class="chart-block">
+    <div class="chart-head"><h3>The low-quality RawHead pattern</h3><span class="hint">hover points to identify configs</span></div>
+    <p class="chart-sub">Each point is one task–configuration pair. RawHead configurations (orange, dark ring) often keep a decent completion rate while collapsing in quality success — the task finishes, but slowly, unstably, or with retries.</p>
+    <div class="legend">
+      <span class="item"><span class="swatch" style="background:var(--c-nohead)"></span>NoHead</span>
+      <span class="item"><span class="swatch" style="background:var(--c-rawhead); box-shadow: 0 0 0 1.5px #8f3d14"></span>RawHead</span>
+      <span class="item"><span class="swatch" style="background:var(--c-roihead)"></span>ROIHead</span>
+    </div>
+    <div class="chart-canvas" id="chart-scatter" style="max-width: 660px; margin: 0 auto;"></div>
+  </div>
+
+  <div class="prose" style="margin-top: 44px;">
+    <p><b>Form beats presence.</b> RawHead and ROIHead come from the same physical camera — only the input form differs. ROI cropping concentrates targets and goal regions in the image, and wins on 5 of 6 task–FoV combinations (up to <b>+22.1</b> FinalScore on Task B). A wider view is not more information for the policy; it is often more background.</p>
+  </div>
+
+  <div class="figure-grid-2">
+    <figure>
+      <img src="static/img/quality_taskB_hq.jpg" alt="Task B high-quality final state: baskets cleanly nested." loading="lazy">
+      <figcaption><b>High-quality completion</b> — baskets cleanly nested, bounded steps, no retries.</figcaption>
+    </figure>
+    <figure>
+      <img src="static/img/quality_taskB_co.jpg" alt="Task B completion-only final state: baskets nested but poorly aligned." loading="lazy">
+      <figcaption><b>Completion only</b> — coarse success, but unstable pose / poor alignment loses the quality bonus.</figcaption>
+    </figure>
+  </div>
+
+  <div class="figure plain">
+    <img src="static/img/heatmap_view_roles.png" alt="RISE-style action-sensitivity maps across the three tasks." loading="lazy" style="max-width: min(100%, 860px);">
+    <p class="figure-caption"><b>Who does what.</b> RISE-style action-sensitivity maps: wrist views respond around grippers, objects, and contact boundaries (local control); the head view responds around containers and placement regions with a small share (q<sub>v</sub> ≈ 0.10–0.14) — coarse localization context, not contact control. Diagnostic illustrations, not success evidence.</p>
+  </div>
+
+  <div class="figure plain">
+    <img src="static/img/toy_observability.png" alt="Toy-transfer diagnostic: head view sees which bin holds the toy; wrist views are blocked by bin walls." loading="lazy" style="max-width: min(100%, 860px);">
+    <p class="figure-caption"><b>The boundary case.</b> In the supplementary toy-transfer diagnostic the target starts hidden inside a bin: the head view distinguishes left vs. right, while both wrist views face the bin walls. When wrist views structurally cannot see the target, a head view becomes a genuine localization signal.</p>
+  </div>
+</section>
+
+<div class="rule"><hr></div>
+
+<!-- ======================= conclusion ======================= -->
+<section class="block" id="conclusion">
+  <h2>Conclusion</h2>
+  <div class="section-sub">&nbsp;</div>
+  <div class="conclusion-quote">
+    The practical design criterion is not view count. Add a camera when it supplies <b>high-density, low-interference, task-relevant information</b> that the existing views do not already provide — and that the policy can use without degrading execution quality.
+  </div>
+  <div class="prose" style="margin-top: 30px;">
+    <p><b>Scope.</b> These conclusions are for tabletop bimanual manipulation with UMI-style large-FoV wrist cameras, small fixed evaluation sets, and descriptive uncertainty. They should not be extended to mobile manipulation or scene-level tasks, where navigation, long-range search, and re-localization can make exocentric views essential. The D435-like condition is a crop-based simulation of restricted FoV, not a claim about specific hardware.</p>
+  </div>
+</section>
+
+<!-- ======================= bibtex ======================= -->
+<section class="block" id="bibtex">
+  <h2>BibTeX</h2>
+  <div class="section-sub">&nbsp;</div>
+  <div class="bibtex-box">
+    <button class="copy-btn" id="copy-bibtex">Copy</button>
+    <pre id="bibtex-code">@techreport{anonymous2026headview,
+  title  = {Assessing the Marginal Utility of Exocentric Head Views in
+            UMI-Style Large-FoV Wrist-Camera Manipulation:
+            A Controlled Study for Tabletop Bimanual Manipulation},
+  author = {Anonymous Author(s)},
+  year   = {2026},
+  month  = {June},
+  note   = {Public technical report}
+}</pre>
+  </div>
+</section>
+
+<footer>
+  <p>Anonymous technical report page · Figures are interactive redraws of the report's per-rollout scoring records.</p>
+  <p style="margin-top:6px;">Template: hand-built static page, no framework · <a href="static/paper.pdf">Download the PDF</a></p>
+</footer>
+
+<script src="static/js/data.js"></script>
+<script src="static/js/charts.js"></script>
+</body>
+</html>
