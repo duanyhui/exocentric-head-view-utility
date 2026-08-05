@@ -22,15 +22,15 @@ cd 网页界面 && python3 -m http.server 8124
 
 然后访问 <http://localhost:8124>。（用 `file://` 直接打开也可以，但建议走 HTTP。）
 
-## 部署到 GitHub Pages
+## 部署（已上线）
 
-方式一（推荐，独立仓库 `<username>.github.io` 或项目仓库）：
+本文件夹是一个独立 git 仓库（与论文仓库分开做版本管理，论文仓库已将其 gitignore）：
 
-1. 把本文件夹内容推到仓库（可放在根目录或 `docs/`）。
-2. 仓库 Settings → Pages → Source 选择对应分支和目录。
+- 远程仓库：<https://github.com/duanyhui/exocentric-head-view-utility>
+- 线上地址：<https://duanyhui.github.io/exocentric-head-view-utility/>（Pages 从 `main` 分支根目录构建）
 
-方式二（保留在当前仓库）：把 `网页界面/` 内容复制到 `docs/`，Pages 指向 `main` 分支 `/docs`。
-注意：GitHub Pages 的 URL 路径对中文目录名支持不佳，部署目录建议用 `docs/` 或仓库根。
+更新流程：改完文件后在本目录 `git add -A && git commit && git push` 即可，Pages 会自动重新部署。
+论文重编译后记得同步 `static/paper.pdf`（复制 `../out/main.pdf`）。
 
 ## 更新数据图
 
