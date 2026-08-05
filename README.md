@@ -11,7 +11,16 @@
     ├── js/data.js        # 图表数据（转录自报告表格与绘图脚本）
     ├── js/charts.js      # 手写 SVG 交互图表（tooltip / 指标切换）
     ├── img/              # 照片、示意图、热力图（由 figs/ 与 figure_y/ 转换）
+    ├── video/            # 三个任务的示例 rollout 视频（压缩版）+ 海报帧
     └── paper.pdf         # 报告 PDF（out/main.pdf 副本）
+```
+
+原始视频放在 `video/`（已 gitignore，不入库）。压缩命令（A/B 二倍速、C 三倍速，去声、720p30）：
+
+```bash
+ffmpeg -i video/Task-A.mp4 -vf "setpts=PTS/2,fps=30,scale=1280:-2" -an \
+  -c:v libx264 -crf 27 -preset slow -pix_fmt yuv420p -movflags +faststart \
+  static/video/task_a_2x.mp4
 ```
 
 ## 本地预览

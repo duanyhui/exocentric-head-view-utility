@@ -133,6 +133,31 @@
     </div>
   </div>
 
+  <div class="video-grid">
+    <figure class="video-card">
+      <div class="video-frame">
+        <video src="static/video/task_a_2x.mp4" poster="static/video/task_a_poster.jpg" muted loop playsinline preload="metadata" aria-label="Task A example rollout, played at 2x speed, muted"></video>
+        <span class="speed-badge">2&times;</span>
+      </div>
+      <figcaption><b>Task A rollout</b> · muted, 2&times; speed</figcaption>
+    </figure>
+    <figure class="video-card">
+      <div class="video-frame">
+        <video src="static/video/task_b_2x.mp4" poster="static/video/task_b_poster.jpg" muted loop playsinline preload="metadata" aria-label="Task B example rollout, played at 2x speed, muted"></video>
+        <span class="speed-badge">2&times;</span>
+      </div>
+      <figcaption><b>Task B rollout</b> · muted, 2&times; speed</figcaption>
+    </figure>
+    <figure class="video-card">
+      <div class="video-frame">
+        <video src="static/video/task_c_3x.mp4" poster="static/video/task_c_poster.jpg" muted loop playsinline preload="metadata" aria-label="Task C example rollout, played at 3x speed, muted"></video>
+        <span class="speed-badge">3&times;</span>
+      </div>
+      <figcaption><b>Task C rollout</b> · muted, 3&times; speed</figcaption>
+    </figure>
+  </div>
+  <p class="figure-caption" style="text-align: center;">One representative real-robot rollout per task. Clips play automatically while in view; click a clip to pause or resume.</p>
+
   <div class="figure plain">
     <img src="static/img/task_overview.jpg" alt="Task overview grid: Tasks A to C under initial layouts Init01 to Init03 with annotated goals." loading="lazy" style="max-width: min(100%, 860px);">
     <p class="figure-caption"><b>Initial layouts.</b> Every task is evaluated under three fixed initial layouts (Init01–Init03) that relocate objects between rollouts, so no configuration can succeed by replaying one memorized trajectory.</p>
@@ -379,5 +404,26 @@
 
 <script src="static/js/data.js"></script>
 <script src="static/js/charts.js"></script>
+<script>
+(() => {
+  const vids = document.querySelectorAll(".video-frame video");
+  if (!vids.length || !("IntersectionObserver" in window)) return;
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      const v = e.target;
+      if (e.isIntersecting && !reduced && !v.dataset.userPaused) v.play().catch(() => {});
+      else v.pause();
+    });
+  }, { threshold: 0.25 });
+  vids.forEach((v) => {
+    io.observe(v);
+    v.addEventListener("click", () => {
+      if (v.paused) { delete v.dataset.userPaused; v.play().catch(() => {}); }
+      else { v.dataset.userPaused = "1"; v.pause(); }
+    });
+  });
+})();
+</script>
 </body>
 </html>
