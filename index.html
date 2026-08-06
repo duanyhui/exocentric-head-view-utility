@@ -23,6 +23,7 @@
       <a href="#setup">Setup</a>
       <a href="#results">Results</a>
       <a href="#analysis">Analysis</a>
+      <a href="#rollouts">Rollouts</a>
       <a href="#bibtex">BibTeX</a>
     </div>
   </div>
@@ -367,6 +368,35 @@
 
 <div class="rule"><hr></div>
 
+<!-- ======================= rollout gallery ======================= -->
+<section class="block" id="rollouts">
+  <h2>Evaluation Rollouts</h2>
+  <p class="section-sub">Unedited evaluation episodes, shown as the policy actually sees them. Every clip is the raw three-stream observation the network receives — two wrist cameras and the head camera — so the scoring decisions below can be checked against the recording.</p>
+
+  <div class="eval-anatomy" aria-hidden="true">
+    <div>robot_0<span>left wrist camera</span></div>
+    <div>robot_1<span>right wrist camera</span></div>
+    <div>head<span>exocentric head camera</span></div>
+  </div>
+
+  <div class="eval-toolbar">
+    <div class="tabs" id="eval-filters" role="tablist" aria-label="Rollout filter">
+      <button class="active" data-group="all">All</button>
+      <button data-group="taskA">Task A</button>
+      <button data-group="taskB">Task B</button>
+      <button data-group="taskC">Task C</button>
+      <button data-group="fov">Wrist-FoV scan</button>
+    </div>
+    <span class="count" id="eval-count"></span>
+  </div>
+
+  <div class="eval-grid" id="eval-grid"></div>
+
+  <p class="chart-note" style="margin-top: 22px;">Clips are muted and played at 2&times;–4&times; so a full episode fits in about 35&nbsp;s; the playback rate is printed on each clip. They are selected illustrations of the outcome categories in the scoring protocol, not a complete record of every rollout, and single episodes should not be read as configuration-level evidence — the aggregate numbers in the Results section carry that role.</p>
+</section>
+
+<div class="rule"><hr></div>
+
 <!-- ======================= conclusion ======================= -->
 <section class="block" id="conclusion">
   <h2>Conclusion</h2>
@@ -404,18 +434,20 @@
 
 <script src="static/js/data.js"></script>
 <script src="static/js/charts.js"></script>
+<script src="static/js/rollouts.js"></script>
 <script>
 (() => {
-  const vids = document.querySelectorAll(".video-frame video");
+  const vids = document.querySelectorAll(".video-frame video, .eval-card video");
   if (!vids.length || !("IntersectionObserver" in window)) return;
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const io = new IntersectionObserver((entries) => {
     entries.forEach((e) => {
       const v = e.target;
-      if (e.isIntersecting && !reduced && !v.dataset.userPaused) v.play().catch(() => {});
+      const visible = e.isIntersecting && !v.closest(".eval-card.hidden");
+      if (visible && !reduced && !v.dataset.userPaused) v.play().catch(() => {});
       else v.pause();
     });
-  }, { threshold: 0.25 });
+  }, { threshold: 0.4 });
   vids.forEach((v) => {
     io.observe(v);
     v.addEventListener("click", () => {
