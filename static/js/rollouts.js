@@ -14,19 +14,19 @@ window.ROLLOUTS = [
   },
   {
     group: "taskA", cfg: "G5", fov: "D435-like", head: "RawHead",
-    base: "taskA_g5_trial6_left-arm-frozen", speed: 4,
+    base: "taskA_g5_trial5_left-arm-frozen", speed: 4,
     outcome: "2 of 4 placed", tone: "bad", lead: "The left arm never grasps.",
     desc: "It drifts and repositions beside the jar but never closes its gripper. Only the right arm's two objects reach the shelf, after which the tabletop stays unchanged for the rest of the episode."
   },
   {
     group: "taskA", cfg: "G6", fov: "D435-like", head: "ROIHead",
-    base: "taskA_g6_trial1_completion", speed: 2,
+    base: "taskA_g6_trial1_completion", speed: 3,
     outcome: "4 of 4 placed", tone: "ok", lead: "Clean completion.",
     desc: "Two cups upright on the upper tier, two jars on the lower tier, nothing left on the table."
   },
   {
     group: "taskA", cfg: "G6", fov: "D435-like", head: "ROIHead",
-    base: "taskA_g6_trial4_grasp-fail", speed: 2,
+    base: "taskA_g6_trial4_grasp-fail", speed: 3,
     outcome: "0 of 4 placed", tone: "bad", lead: "The first grasp never closes.",
     desc: "The right gripper descends onto the same cup again and again without ever closing on it, and the left arm never starts. The shelf is still empty at the end."
   },
@@ -40,43 +40,43 @@ window.ROLLOUTS = [
   /* ---------- Task B: basket nesting ---------- */
   {
     group: "taskB", cfg: "G3", fov: "Large", head: "ROIHead",
-    base: "taskB_g3_trial3_success", speed: 2,
+    base: "taskB_g3_trial3_success", speed: 3,
     outcome: "4 of 4 nested", tone: "ok", lead: "The fastest run in this gallery.",
     desc: "Four baskets into one stack by 55 s with no retries. This is the configuration with the largest head-view gain on Task B."
   },
   {
     group: "taskB", cfg: "G3", fov: "Large", head: "ROIHead",
-    base: "taskB_g3_trial1_success", speed: 2,
+    base: "taskB_g3_trial1_success", speed: 3,
     outcome: "4 of 4 nested", tone: "ok", lead: "A second clean run.",
     desc: "The stack builds up without a single re-grasp and closes at 57 s."
   },
   {
     group: "taskB", cfg: "G2", fov: "Large", head: "RawHead",
-    base: "taskB_g2_trial1_completion", speed: 2,
+    base: "taskB_g2_trial1_completion", speed: 3,
     outcome: "4 of 4 nested", tone: "ok", lead: "The raw head view also gets there.",
     desc: "All four baskets nested, finishing at 60 s. Note how much of the room the uncropped wrist fisheye takes in along the way."
   },
   {
     group: "taskB", cfg: "G2", fov: "Large", head: "RawHead",
-    base: "taskB_g2_trial9_timeout", speed: 2,
+    base: "taskB_g2_trial9_timeout", speed: 3,
     outcome: "3 of 4 nested", tone: "bad", lead: "Released beside the stack.",
     desc: "The fourth basket is set down next to the stack rather than into it. Both arms then hover over it with an open, empty gripper until the budget expires — the basket stays in view the whole time and is simply never picked up again."
   },
   {
     group: "taskB", cfg: "G6", fov: "D435-like", head: "ROIHead",
-    base: "taskB_g6_trial2_success", speed: 2,
+    base: "taskB_g6_trial2_success", speed: 3,
     outcome: "4 of 4 nested", tone: "ok", lead: "Narrow wrist view, still succeeds.",
     desc: "The nesting completes, but the last insertion only lands at 62 s — slower than either large-FoV run above."
   },
   {
     group: "taskB", cfg: "G6", fov: "D435-like", head: "ROIHead",
-    base: "taskB_g6_trial4_timeout", speed: 2,
+    base: "taskB_g6_trial4_timeout", speed: 3,
     outcome: "3 of 4 nested", tone: "bad", lead: "Held against the rim.",
     desc: "The last basket is grasped and then held tilted against the stack for roughly 40 s, oscillating without ever aligning or releasing. The left arm stays parked throughout."
   },
   {
     group: "taskB", cfg: "G6", fov: "D435-like", head: "ROIHead",
-    base: "taskB_g6_trial6_timeout-severe", speed: 2,
+    base: "taskB_g6_trial6_timeout-severe", speed: 3,
     outcome: "3 of 4 nested", tone: "bad", lead: "The same stall, twice over.",
     desc: "From about 56 s the right wrist camera is filled edge to edge by the basket it is carrying — the target it is reaching for is no longer inside its own field of view."
   },
@@ -84,31 +84,31 @@ window.ROLLOUTS = [
   /* ---------- Task C: plate placement ---------- */
   {
     group: "taskC", cfg: "G2", fov: "Large", head: "RawHead",
-    base: "taskC_g2_trial9_completion", speed: 2,
+    base: "taskC_g2_trial9_completion", speed: 3,
     outcome: "3 of 3 upright", tone: "ok", lead: "The cleanest Task C run here.",
     desc: "Green, purple and pink each land upright in their own evenly spaced slot, first try. Read it against the run beside it."
   },
   {
     group: "taskC", cfg: "G2", fov: "Large", head: "RawHead",
-    base: "taskC_g2_trial5_imperfect", speed: 2,
+    base: "taskC_g2_trial5_imperfect", speed: 3,
     outcome: "2 of 3 upright", tone: "warn", lead: "One plate laid flat.",
     desc: "At a glance the rack looks full — but watch the purple plate. It is released flat across the rack wires instead of standing in a slot, and is never corrected. Same three plates delivered, one unacceptable final pose."
   },
   {
     group: "taskC", cfg: "G2", fov: "Large", head: "RawHead",
-    base: "taskC_g2_trial2_completion", speed: 2,
+    base: "taskC_g2_trial2_completion", speed: 3,
     outcome: "3 of 3 upright", tone: "ok", lead: "Three plates seated in sequence.",
     desc: "Purple, then green, then pink. The last two share neighbouring slots and lean slightly together, but all three stand."
   },
   {
     group: "taskC", cfg: "G3", fov: "Large", head: "ROIHead",
-    base: "taskC_g3_trial9_completion", speed: 2,
+    base: "taskC_g3_trial9_completion", speed: 3,
     outcome: "3 of 3 upright", tone: "ok", lead: "A direct approach each time.",
     desc: "ROI cropping keeps the rack slots in frame, and each of the three approaches commits to a slot without visible retries."
   },
   {
     group: "taskC", cfg: "G3", fov: "Large", head: "ROIHead",
-    base: "taskC_g3_trial10_retry-timeout", speed: 2,
+    base: "taskC_g3_trial10_retry-timeout", speed: 3,
     outcome: "1 of 3 upright", tone: "bad", lead: "Six attempts, one plate.",
     desc: "Only the pink plate is placed. The arm then spends more than half the episode closing on the green plate, nudging it, backing off and re-approaching, never lifting it. The purple plate is never touched."
   },
@@ -116,25 +116,25 @@ window.ROLLOUTS = [
   /* ---------- Wrist-FoV scan (Task B) ---------- */
   {
     group: "fov", cfg: "FoV120", fov: "120°", head: "ROIHead",
-    base: "fov_taskB_fov120_completion", speed: 2,
+    base: "fov_taskB_fov120_completion", speed: 3,
     outcome: "4 of 4 nested", tone: "ok", lead: "Completes, but slower.",
     desc: "Only the wrist streams are cropped; the head stream is unchanged. The room context the fisheye supplied is gone — two or three baskets fit in frame at once — and the last insertion needs 68 s."
   },
   {
     group: "fov", cfg: "FoV120", fov: "120°", head: "ROIHead",
-    base: "fov_taskB_fov120_timeout", speed: 2,
+    base: "fov_taskB_fov120_timeout", speed: 3,
     outcome: "3 of 4 nested", tone: "bad", lead: "Carried, then never inserted.",
     desc: "The last basket is brought to the stack and held beside it for about 30 s without the insertion ever being attempted to completion."
   },
   {
     group: "fov", cfg: "FoV90", fov: "90°", head: "ROIHead",
-    base: "fov_taskB_fov90_completion", speed: 2,
+    base: "fov_taskB_fov90_completion", speed: 3,
     outcome: "4 of 4 nested", tone: "ok", lead: "The slowest success here.",
     desc: "The narrowest wrist view in the scan: a patch of table and the grippers, one or two baskets at a time. The four surrounding baskets can no longer be seen together, and the final insertion only lands at 72 s."
   },
   {
     group: "fov", cfg: "FoV90", fov: "90°", head: "ROIHead",
-    base: "fov_taskB_fov90_timeout", speed: 2,
+    base: "fov_taskB_fov90_timeout", speed: 3,
     outcome: "3 of 4 nested", tone: "bad", lead: "Aligning against an unseen target.",
     desc: "The recurring narrow-FoV failure: once the carried basket fills the wrist frame, the arm is aligning against something it can no longer see, and the insertion never converges."
   }
