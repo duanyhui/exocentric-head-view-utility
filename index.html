@@ -20,9 +20,9 @@
     <div class="nav-links">
       <a href="#abstract">Abstract</a>
       <a href="#findings">Findings</a>
-      <a href="#rollouts">Rollouts</a>
       <a href="#setup">Setup</a>
       <a href="#results">Results</a>
+      <a href="#rollouts">Rollouts</a>
       <a href="#analysis">Analysis</a>
       <a href="#bibtex">BibTeX</a>
     </div>
@@ -109,73 +109,60 @@
 
 <div class="rule"><hr></div>
 
-<!-- ======================= rollout gallery ======================= -->
-<section class="block" id="rollouts">
-  <h2>Evaluation Rollouts</h2>
-  <p class="section-sub">Unedited evaluation episodes, shown as the policy actually sees them. Every clip is the raw three-stream observation the network receives — two wrist cameras and the head camera — so the scoring decisions below can be checked against the recording.</p>
-
-  <div class="eval-anatomy" aria-hidden="true">
-    <div>robot_0<span>left wrist camera</span></div>
-    <div>robot_1<span>right wrist camera</span></div>
-    <div>head<span>exocentric head camera</span></div>
-  </div>
-
-  <div class="eval-toolbar">
-    <div class="tabs" id="eval-filters" role="tablist" aria-label="Rollout filter">
-      <button class="active" data-group="all">All</button>
-      <button data-group="taskA">Task A</button>
-      <button data-group="taskB">Task B</button>
-      <button data-group="taskC">Task C</button>
-      <button data-group="fov">Wrist-FoV scan</button>
-    </div>
-    <span class="count" id="eval-count"></span>
-  </div>
-
-  <div class="eval-grid" id="eval-grid"></div>
-
-  <p class="chart-note" style="margin-top: 22px;">Clips are muted and played at 3&times;–4&times; so a full episode fits in roughly half a minute; the playback rate is printed on each clip. They are selected illustrations of the outcome categories in the scoring protocol, not a complete record of every rollout, and single episodes should not be read as configuration-level evidence — the aggregate numbers in the Results section carry that role.</p>
-</section>
-
-<div class="rule"><hr></div>
 
 <!-- ======================= setup ======================= -->
 <section class="block" id="setup">
   <h2>Experimental Setup</h2>
   <p class="section-sub">Three tabletop tasks × six visual configurations, with the policy backbone, training recipe, and evaluation schedule held fixed.</p>
 
-  <div class="video-grid">
-    <figure class="task-card video-card">
-      <div class="video-frame">
-        <video src="static/video/task_a_3x.mp4" poster="static/video/task_a_poster.jpg" muted loop playsinline preload="metadata" aria-label="Task A example rollout, played at 3x speed, muted"></video>
-        <span class="speed-badge">3&times;</span>
-      </div>
+  <div class="task-grid">
+    <div class="task-card">
+      <img src="static/img/task_a.jpg" alt="Task A: four-object organization scene">
       <div class="body">
         <h3><span>Task A</span> · Four-Object Organization</h3>
         <p>Sequentially grasp four objects and place them into assigned storage positions. Long-horizon, multi-stage; also used for the data-scaling study.</p>
       </div>
-    </figure>
-    <figure class="task-card video-card">
-      <div class="video-frame">
-        <video src="static/video/task_b_3x.mp4" poster="static/video/task_b_poster.jpg" muted loop playsinline preload="metadata" aria-label="Task B example rollout, played at 3x speed, muted"></video>
-        <span class="speed-badge">3&times;</span>
-      </div>
+    </div>
+    <div class="task-card">
+      <img src="static/img/task_b.jpg" alt="Task B: basket nesting scene">
       <div class="body">
         <h3><span>Task B</span> · Basket Nesting</h3>
         <p>Nest four surrounding baskets into a central target basket with both arms. Stresses bimanual coordination and relative pose; used for the wrist-FoV scan.</p>
       </div>
-    </figure>
-    <figure class="task-card video-card">
-      <div class="video-frame">
-        <video src="static/video/task_c_3x.mp4" poster="static/video/task_c_poster.jpg" muted loop playsinline preload="metadata" aria-label="Task C example rollout, played at 3x speed, muted"></video>
-        <span class="speed-badge">3&times;</span>
-      </div>
+    </div>
+    <div class="task-card">
+      <img src="static/img/task_c.jpg" alt="Task C: plate placement scene">
       <div class="body">
         <h3><span>Task C</span> · Plate Placement</h3>
         <p>Grasp plates and insert them accurately into a rack. Sensitive to first localization, grasp stability, and final placement precision.</p>
       </div>
+    </div>
+  </div>
+
+  <div class="video-grid">
+    <figure class="video-card">
+      <div class="video-frame">
+        <video src="static/video/task_a_3x.mp4" poster="static/video/task_a_poster.jpg" muted loop playsinline preload="metadata" aria-label="Task A example rollout, played at 3x speed, muted"></video>
+        <span class="speed-badge">3&times;</span>
+      </div>
+      <figcaption><b>Task A rollout</b> · muted, 3&times; speed</figcaption>
+    </figure>
+    <figure class="video-card">
+      <div class="video-frame">
+        <video src="static/video/task_b_3x.mp4" poster="static/video/task_b_poster.jpg" muted loop playsinline preload="metadata" aria-label="Task B example rollout, played at 3x speed, muted"></video>
+        <span class="speed-badge">3&times;</span>
+      </div>
+      <figcaption><b>Task B rollout</b> · muted, 3&times; speed</figcaption>
+    </figure>
+    <figure class="video-card">
+      <div class="video-frame">
+        <video src="static/video/task_c_3x.mp4" poster="static/video/task_c_poster.jpg" muted loop playsinline preload="metadata" aria-label="Task C example rollout, played at 3x speed, muted"></video>
+        <span class="speed-badge">3&times;</span>
+      </div>
+      <figcaption><b>Task C rollout</b> · muted, 3&times; speed</figcaption>
     </figure>
   </div>
-  <p class="figure-caption" style="text-align: center;">One representative real-robot rollout per task, muted and played at 3&times; speed. Clips play automatically while in view; click a clip to pause or resume.</p>
+  <p class="figure-caption" style="text-align: center;">One representative real-robot rollout per task. Clips play automatically while in view; click a clip to pause or resume.</p>
 
   <div class="figure plain">
     <img src="static/img/task_overview.jpg" alt="Task overview grid: Tasks A to C under initial layouts Init01 to Init03 with annotated goals." loading="lazy" style="max-width: min(100%, 860px);">
@@ -337,6 +324,35 @@
     <div class="chart-canvas" id="chart-scaling" style="max-width: 780px; margin: 0 auto;"></div>
     <p class="chart-note">The slim vertical ranges at each measured point are descriptive bootstrap intervals — intervals exist only at 50/200/800 demonstrations, so no continuous band is drawn. The 2W-D435Crop point at 200 demonstrations is a non-monotonic outlier consistent with high variance under the fixed evaluation schedule — the trend is not presented as a strict scaling law.</p>
   </div>
+</section>
+
+<div class="rule"><hr></div>
+
+<!-- ======================= rollout gallery ======================= -->
+<section class="block" id="rollouts">
+  <h2>Evaluation Rollouts</h2>
+  <p class="section-sub">Unedited evaluation episodes, shown as the policy actually sees them. Every clip is the raw three-stream observation the network receives — two wrist cameras and the head camera — so the scoring decisions below can be checked against the recording.</p>
+
+  <div class="eval-anatomy" aria-hidden="true">
+    <div>robot_0<span>left wrist camera</span></div>
+    <div>robot_1<span>right wrist camera</span></div>
+    <div>head<span>exocentric head camera</span></div>
+  </div>
+
+  <div class="eval-toolbar">
+    <div class="tabs" id="eval-filters" role="tablist" aria-label="Rollout filter">
+      <button class="active" data-group="all">All</button>
+      <button data-group="taskA">Task A</button>
+      <button data-group="taskB">Task B</button>
+      <button data-group="taskC">Task C</button>
+      <button data-group="fov">Wrist-FoV scan</button>
+    </div>
+    <span class="count" id="eval-count"></span>
+  </div>
+
+  <div class="eval-grid" id="eval-grid"></div>
+
+  <p class="chart-note" style="margin-top: 22px;">Clips are muted and played at 3&times;–4&times; so a full episode fits in roughly half a minute; the playback rate is printed on each clip. They are selected illustrations of the outcome categories in the scoring protocol, not a complete record of every rollout, and single episodes should not be read as configuration-level evidence — the aggregate numbers in the Results section carry that role.</p>
 </section>
 
 <div class="rule"><hr></div>
