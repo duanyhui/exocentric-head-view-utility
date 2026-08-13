@@ -185,6 +185,41 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   display: block;
   border-radius: 8px;
 }
+/* annotated platform photo: unretouched image + vector callout layer */
+.teaser-stage { position: relative; border-radius: 8px; overflow: hidden; }
+.teaser-stage img { border-radius: 0; }
+.teaser-stage .defocus,
+.teaser-stage .anno { position: absolute; inset: 0; pointer-events: none; }
+/* A blurred copy of the same photo, revealed only around the edges, so the
+   room clutter (envelope, clipboard, wall panels, floor) drops out of focus
+   while the three cameras and the workspace stay sharp. The two mask
+   gradients union by default: blurred wherever EITHER band says so.
+   scale() pushes the blurred layer's own soft edge outside the frame. */
+.teaser-stage .defocus {
+  background: url("../img/platform_clean.jpg") center / cover no-repeat;
+  filter: blur(6px) saturate(0.55) brightness(0.95);
+  transform: scale(1.04);
+  -webkit-mask-image:
+    linear-gradient(to bottom, #000 0 7%, transparent 21% 84%, #000 100%),
+    linear-gradient(to right,  #000 0 3%, transparent 19% 87%, #000 100%);
+  mask-image:
+    linear-gradient(to bottom, #000 0 7%, transparent 21% 84%, #000 100%),
+    linear-gradient(to right,  #000 0 3%, transparent 19% 87%, #000 100%);
+}
+.teaser-stage .anno { width: 100%; height: 100%; }
+.teaser-stage .anno .ttl {
+  font-family: var(--sans); font-size: 34px; font-weight: 650;
+  letter-spacing: 0.10em; fill: #fff;
+}
+.teaser-stage .anno .lead {
+  fill: none; stroke: #fff; stroke-width: 2.6;
+  stroke-linecap: round; stroke-linejoin: round; opacity: 0.92;
+}
+.teaser-stage .anno .ring { fill: none; stroke: #fff; stroke-width: 2.8; opacity: 0.95; }
+.teaser-stage .anno .dot { fill: #fff; }
+/* The callouts scale with the image, so below phone width they get too small
+   to read; drop them there — the caption already names each camera. */
+@media (max-width: 700px) { .teaser-stage .anno { display: none; } }
 .teaser-caption,
 .figure-caption {
   max-width: var(--maxw-text);

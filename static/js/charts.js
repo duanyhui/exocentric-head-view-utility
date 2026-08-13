@@ -18,9 +18,12 @@
     axis: "#c3c2b7"
   };
   const SCALING_COLOR = ["#2a78d6", "#eb6834", "#1baf7a"];
-  // sequential blue ramp (light -> dark) for the heatmap
+  // Sequential blue ramp (light -> dark) for the heatmap. Stops 6-12 are dark
+  // enough (relative luminance <= 0.18) that white cell text clears WCAG AA;
+  // stops 0-5 are light enough for the dark ink. See WHITE_TEXT_FROM below.
   const RAMP = ["#cde2fb", "#b7d3f6", "#9ec5f4", "#86b6ef", "#6da7ec", "#5598e7",
-    "#3987e5", "#2a78d6", "#256abf", "#1c5cab", "#184f95", "#104281", "#0d366b"];
+    "#2f76cc", "#2769bb", "#2260a9", "#1c5496", "#174a84", "#124070", "#0d366b"];
+  const WHITE_TEXT_FROM = 6;
 
   /* ---------- helpers ---------- */
   const NS = "http://www.w3.org/2000/svg";
@@ -38,9 +41,12 @@
   function fmt(v, dp) {
     return Number(v).toFixed(dp === undefined ? 1 : dp);
   }
-  function rampColor(v, lo, hi) {
+  function rampIndex(v, lo, hi) {
     const t = Math.max(0, Math.min(1, (v - lo) / (hi - lo)));
-    return RAMP[Math.round(t * (RAMP.length - 1))];
+    return Math.round(t * (RAMP.length - 1));
+  }
+  function rampColor(v, lo, hi) {
+    return RAMP[rampIndex(v, lo, hi)];
   }
   function tintColor(hex, f) {
     f = f === undefined ? 0.55 : f;
@@ -221,13 +227,19 @@
         { "text-anchor": "end", "font-size": 12, "font-weight": 600, fill: COLOR.ink2 });
       D.configs.forEach((cfg, c) => {
         const v = D.main[task].final[c];
-        const fill = rampColor(v, LO, HI);
-        const dark = (v - LO) / (HI - LO) > 0.45;
+        const idx = rampIndex(v, LO, HI);
+        const fill = RAMP[idx];
+        // Pick the text colour off the ramp index, not a separate threshold, so
+        // the two can never drift apart when the ramp is retuned.
+        const useWhite = idx >= WHITE_TEXT_FROM;
         const cell = el("rect", { x: m.l + c * cw + 2, y: m.t + r * ch + 2,
           width: cw - 4, height: ch - 4, rx: 7, fill }, svg);
+        // Inline style, not a fill attribute: `.chart-canvas text` in style.css
+        // sets fill, and a CSS rule outranks an SVG presentation attribute.
         txt(svg, m.l + c * cw + cw / 2, m.t + r * ch + ch / 2 + 4.5, fmt(v),
           { "text-anchor": "middle", "font-size": 13, "font-weight": 600,
-            fill: dark ? "#ffffff" : "#1d2733", "pointer-events": "none" });
+            style: "fill:" + (useWhite ? "#ffffff" : "#1d2733"),
+            "pointer-events": "none" });
         hover(cell, () => ttRows(`${task} · ${cfg} (${D.headTypes[c]})`, fill, [
           ["FinalScore", fmt(v)],
           ["Wrist FoV", D.fovs[c]],
