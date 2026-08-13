@@ -128,7 +128,6 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   color: var(--ink-2);
   margin-bottom: 4px;
 }
-.hero .authors .anon { font-style: italic; }
 .hero .venue {
   font-size: 13.5px;
   color: var(--ink-3);
