@@ -1,25 +1,82 @@
-# 报告项目主页（GitHub Pages）
+# Is a Head View Still Necessary with Large-FoV Wrist Cameras?
 
-纯静态站点，无构建步骤。目录结构：
+Project page for the technical report **"Assessing the Marginal Utility of Exocentric
+Head Views in UMI-Style Large-FoV Wrist-Camera Manipulation: A Controlled Study for
+Tabletop Bimanual Manipulation."**
+
+**[Project page](https://duanyhui.github.io/exocentric-head-view-utility/)** ·
+**[Paper (PDF)](https://duanyhui.github.io/exocentric-head-view-utility/static/paper.pdf)** ·
+arXiv: *coming soon*
+
+Yuhui Duan · Wenchang Gao · Shi Jin · Yuntian Wang · Jin Wang · Siao Liu · Yan Ding · Zhaxizhuoma
+
+Multi-view perception is often treated as a safe design choice in robot manipulation: if
+one camera helps, more cameras should help more. We test that assumption directly. On a
+real bimanual platform with a fixed OpenPI π<sub>0.5</sub> backbone, we compare policies
+trained with two large-FoV wrist cameras against policies that additionally receive a head
+view, holding everything else constant.
+
+## What this study asks
+
+Four research questions, each answered with a controlled contrast rather than an ablation
+sweep. Scores are FinalScore, a quality-adjusted metric that separates high-quality success
+from coarse completion.
+
+**RQ1 — Wrist-only is already a strong baseline.** Under large-FoV wrists, head-view
+contrasts are inconsistent: a raw head view lowers mean FinalScore on Task A (−16.0) and
+Task B (−1.1); an ROI-cropped head view helps on Task B (+21.0) and Task C (+12.2) but not
+on Task A (−6.0).
+
+**RQ2 — Restricting wrist FoV creates opportunity, not a guarantee.** ROIHead improves
+localization under *every* FoV setting, yet the head-view delta flips negative at the medium
+settings (−5.3, −7.9) because longer trajectories violate the quality gate — while the
+D435-like setting converts the same opportunity into a +29.2 gain. The contrast is
+**non-monotonic** in wrist FoV.
+
+**RQ3 — The form of the head view matters more than its presence.** ROI-cropped head views
+beat raw head views on 5 of 6 task–FoV combinations. RawHead shows a characteristic
+signature: tasks get completed, but with low quality-success and longer trajectories.
+
+**RQ4 — FoV conclusions are data-scale-dependent.** Only the large-FoV wrist-only
+configuration crosses FinalScore 60, and only at 800 demonstrations. Wide observations may
+need more data to stabilize, but suggest a higher ceiling.
+
+## What's in this repository
+
+This repository holds **the project page only** — a hand-built static site with no framework
+and no build step, plus the report PDF. The training and evaluation code is not released
+here; the `Code` button on the page is intentionally disabled until it is.
 
 ```
-网页界面/
-├── index.html            # 单页项目主页（英文）
-├── .nojekyll             # 关闭 GitHub Pages 的 Jekyll 处理
+.
+├── index.html            # the single-page project site
+├── .nojekyll             # disable GitHub Pages' Jekyll processing
 └── static/
-    ├── css/style.css     # 全部样式（浅色主题）
-    ├── js/data.js        # 图表数据（转录自报告表格与绘图脚本）
-    ├── js/charts.js      # 手写 SVG 交互图表（tooltip / 指标切换）
-    ├── img/              # 照片、示意图、热力图（由 figs/ 与 figure_y/ 转换）
-    ├── js/rollouts.js    # 评测片段画廊：元数据 + 渲染 + 筛选
-    ├── video/            # 三个任务的示例 rollout 视频（压缩版）+ 海报帧
-    │   └── eval/         # 21 个三视角评测片段 + 海报帧（约 12MB）
-    └── paper.pdf         # 报告 PDF（out/main.pdf 副本）
+    ├── css/style.css     # all styling (light and dark)
+    ├── js/data.js        # chart data, transcribed from the report's tables
+    ├── js/charts.js      # hand-written interactive SVG charts (tooltips, metric switching)
+    ├── js/rollouts.js    # rollout gallery: clip metadata + rendering + filtering
+    ├── img/              # photos, schematics, heatmaps (converted from the report's figures)
+    ├── video/            # three task example clips + poster frames
+    │   └── eval/         # 21 three-view evaluation clips + poster frames
+    └── paper.pdf         # the report
 ```
 
-原始视频放在 `video/`（已 gitignore，不入库），只提交压缩产物。
+## Evaluation rollouts
 
-**任务示例视频**（统一三倍速、去声、720p30）：
+The gallery holds **21 evaluation clips**. Each source recording is the policy's actual
+input stream: `robot_0`, `robot_1`, and `head` concatenated horizontally into a single 3:1
+frame. Clips are uniformly sped up 3–4×, stripped of audio, and encoded at 1080 px wide,
+with a poster frame sampled at 15% of the duration.
+
+All clip metadata — configuration, outcome classification, and description — lives in the
+`window.ROLLOUTS` array in `static/js/rollouts.js`. Adding or removing a clip means editing
+that one array.
+
+<details>
+<summary>Video encoding commands</summary>
+
+Task example clips (uniform 3×, no audio, 720p30):
 
 ```bash
 ffmpeg -i video/Task-A.mp4 -vf "setpts=PTS/3,fps=30,scale=1280:-2" -an \
@@ -27,43 +84,53 @@ ffmpeg -i video/Task-A.mp4 -vf "setpts=PTS/3,fps=30,scale=1280:-2" -an \
   static/video/task_a_3x.mp4
 ```
 
-**三视角评测片段**（`video/三视角评测视频/` → `static/video/eval/`）：源片是
-robot_0 / robot_1 / head 三路横向拼接（3:1），即策略的真实输入流。批量压缩脚本
-按"目标时长约 35s"自动选倍速，下限 3×、上限 4×，输出 1080 宽、crf 28、去声，并抽 15% 处
-的帧作海报。片段的配置、结局分类和说明文字都在 `static/js/rollouts.js` 的
-`window.ROLLOUTS` 数组里，增删片段只改这一个数组。
+Evaluation clips are batch-processed with a target duration of about 35 s, which selects a
+speed-up factor per clip within a 3×–4× range, then encodes at 1080 px wide with `-crf 28`
+and no audio. Uncompressed sources live in `video/` and are git-ignored; only the compressed
+outputs are committed.
 
-卡片上**不显示 trial 编号**：源录像的 trial 命名出现过错标（`g5/trial1_左臂不动`
-实为 trial5），所以每张卡以"画面里发生了什么"描述，不绑定 episode ID。输出文件名
-里仍保留 trial 号供追溯。每个片段的结局都逐帧核对过，不是照抄文件名——例如
-`taskC/g2/trial5_不完美完成` 的实际问题是紫盘平放在铁丝上（3 送达 / 2 正立），
-与重试无关。
+</details>
 
-注意：批量处理时 ffmpeg 会吞掉 shell `while read` 循环的 stdin 导致静默丢文件，
-要么加 `-nostdin`，要么用脚本语言驱动（本项目用的是 Python + subprocess）。
+## Chart data
 
-## 本地预览
+Every number rendered on the page comes from `window.REPORT_DATA` in `static/js/data.js`,
+which mirrors the report's result tables and the plotting scripts that produce the paper's
+figures (`regenerate_public_figures.py`, `plot_fov_delta_decomposition.py`). Editing the
+data file and refreshing the page is enough — there is nothing to rebuild.
+
+## Local preview
 
 ```bash
-cd 网页界面 && python3 -m http.server 8124
+python3 -m http.server 8124
 ```
 
-然后访问 <http://localhost:8124>。（用 `file://` 直接打开也可以，但建议走 HTTP。）
+Then open <http://localhost:8124>. Opening `index.html` over `file://` mostly works, but
+HTTP is recommended.
 
-## 部署（已上线）
+## Deployment
 
-本文件夹是一个独立 git 仓库（与论文仓库分开做版本管理，论文仓库已将其 gitignore）：
+GitHub Pages builds from the root of the `main` branch, so pushing is deploying.
 
-- 远程仓库：<https://github.com/duanyhui/exocentric-head-view-utility>
-- 线上地址：<https://duanyhui.github.io/exocentric-head-view-utility/>（Pages 从 `main` 分支根目录构建）
+## Citation
 
-更新流程：改完文件后在本目录 `git add -A && git commit && git push` 即可，Pages 会自动重新部署。
-论文重编译后记得同步 `static/paper.pdf`（复制 `../out/main.pdf`）。
+```bibtex
+@techreport{duan2026headview,
+  title  = {Assessing the Marginal Utility of Exocentric Head Views in
+            UMI-Style Large-FoV Wrist-Camera Manipulation:
+            A Controlled Study for Tabletop Bimanual Manipulation},
+  author = {Yuhui Duan and Wenchang Gao and Shi Jin and Yuntian Wang and
+            Jin Wang and Siao Liu and Yan Ding and {Zhaxizhuoma}},
+  year   = {2026},
+  month  = {June},
+  note   = {Public technical report}
+}
+```
 
-## 更新数据图
+## License
 
-图表数据都在 `static/js/data.js`，与 `scripts/regenerate_public_figures.py`、
-`scripts/plot_fov_delta_decomposition.py` 及 main.tex 中的表格一一对应；改数据后刷新页面即可。
+Copyright (c) 2026 Yuhui Duan, Wenchang Gao, Shi Jin, Yuntian Wang, Jin Wang, Siao Liu,
+Yan Ding, Zhaxizhuoma.
 
-作者/单位/链接目前是匿名占位，正式发布时改 `index.html` 里 hero 区块与 BibTeX 即可
-（`Code (soon)` 按钮换成真实仓库链接，删掉 `aria-disabled`）。
+Licensed under [Creative Commons Attribution 4.0 International](LICENSE) (CC BY 4.0). You
+may share and adapt the page, figures, videos, and report, including commercially, as long
+as you give appropriate credit.
